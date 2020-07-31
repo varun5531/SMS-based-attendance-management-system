@@ -1,0 +1,69 @@
+def main():
+        #smtplib is a module used to send mail
+        import smtplib
+
+        #xlrd is a module used to work with excel files
+        import xlrd
+
+        #connecting to the gmail port 587
+        try:
+                mail=smtplib.SMTP('smtp.gmail.com',587)
+                mail.starttls()
+        except:
+                print("enter port information properly or check internet connection")
+                exit(1)
+
+        #mail login of sender
+        try:
+                mail.login("kummariking@gmail.com", "12suhith34")
+        except:
+                print("enter sender information properly")
+                exit(1)
+
+        #open excel file
+        try:
+                workbook = xlrd.open_workbook("Book1.xlsx")
+                sheet = workbook.sheet_by_index(0)
+                row = sheet.nrows
+        except:
+                print("excel file is not properly attached")
+                exit(1)
+
+        for i in range(1,row):
+
+                #if attendance lessthan 75
+                if sheet.cell_value(i,2) < 75:
+                        #message to be send
+                        requiredperiods = (75*sheet.cell_value(i,6))/100 - sheet.cell_value(i,5)
+                        message1="subject: SMS Based Student Information System \n\n your attendance percentage is " + str(sheet.cell_value(i,2)) +"%"
+                        message2="\n number of periods required in order to reach 75% is " + str(requiredperiods) + " periods"
+                        message3="\n so please come to college regularly \n by SNIST"
+                        message=message1 + message2 + message3
+                        mailid=str(sheet.cell_value(i,4))
+                        mail.sendmail("kummariking@gmail.com", mailid, message)
+                        print("mail is sent to " + sheet.cell_value(i,1))
+
+                #if attendence is equal to 75        
+                if sheet.cell_value(i,2) == 75:
+                        #message to be send
+                        message1="subject: SMS Based Student Information System \n\n your attendance percentage is " + str(sheet.cell_value(i,2)) +"%"
+                        message2="\n its better to maintain 80% in order to secure better marks"
+                        message3="\n so please come to college regularly \n by SNIST"
+                        mailid=str(sheet.cell_value(i,4))
+                        message=message1 + message2 + message3
+                        mail.sendmail("kummariking@gmail.com", mailid, message)
+                        print("mail is sent to " + sheet.cell_value(i,1))
+
+                #if attendance is greaterthan 75
+                if sheet.cell_value(i,2) > 75:
+                        #message to be send
+                        requiredperiods = sheet.cell_value(i,5) - (75*sheet.cell_value(i,6))/100
+                        message1="subject: SMS Based Student Information System \n\n your attendance percentage is " + str(sheet.cell_value(i,2)) +"%"
+                        message2="\n number of periods more than 75% is " + str(requiredperiods) + "periods"
+                        message3="\n so please dont be so regular to collage \n by SNIST"
+                        mailid=str(sheet.cell_value(i,4))
+                        message=message1 + message2 + message3
+                        mail.sendmail("kummariking@gmail.com", mailid, message)
+                        print("mail is sent to " + sheet.cell_value(i,1))
+                        
+        mail.quit()

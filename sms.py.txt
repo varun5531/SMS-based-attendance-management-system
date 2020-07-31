@@ -1,0 +1,73 @@
+def main():
+        #twilio module is used to send messages
+        from twilio.rest import Client
+
+        #xlrd module is used to woek with excel
+        import xlrd
+
+        try:
+                #sid of a message sender twilio
+                sid = "AC6c06665c19b67c70011fcb948cb2cd47"
+                #token or key required to send a message twilio key
+                token = "9fa1e2969cb48feb2accbec3eaf3072e"
+                client = Client(sid, token)
+        except:
+                print("please check authentication")
+                exit(1)
+
+        #open excel file
+        try:   
+                workbook = xlrd.open_workbook("Book1.xlsx")
+                sheet = workbook.sheet_by_index(0)
+                row = sheet.nrows
+        except:
+                print("excel file is not properly attached")
+                exit(1)
+
+        for i in range(1,row):
+                #if attendance lessthan 75
+                if sheet.cell_value(i,2) < 75:
+                        #message to be send
+                        requiredperiods = (75*sheet.cell_value(i,6))/100 - sheet.cell_value(i,5)
+                        message1='subject: SMS Based Student Information System \n\n your attendance percentage is ' + str(sheet.cell_value(i,2)) +'%'
+                        message2='\n number of periods required in order to reach 75% is ' + str(requiredperiods) + ' periods'
+                        message3='\n so please come to college regularly \n by SNIST'
+                        message=message1 + message2 + message3
+                        try:
+                                sms = client.messages.create(to=str(sheet.cell_value(i,3)), from_='+12052551321', body=message)
+                                print("messsage is sent to " + sheet.cell_value(i,1))
+                        except:
+                                print("messsage is not sent to " + sheet.cell_value(i,1))
+
+                #if attendence is equal to 75 
+                if sheet.cell_value(i,2) == 75:
+                        #message to be send
+                        message1='subject: SMS Based Student Information System \n\n your attendance percentage is ' + str(sheet.cell_value(i,2)) +'%'
+                        message2='\n its better to maintain 80% in order to secure better marks'
+                        message3='\n so please come to college regularly \n by SNIST'
+                        message=message1 + message2 + message3
+                        try:
+                                sms = client.messages.create(to=str(sheet.cell_value(i,3)), from_='+12052551321', body=message)
+                                print("messsage is sent to " + sheet.cell_value(i,1))
+                        except:
+                                print("messsage is not sent to " + sheet.cell_value(i,1))
+                                print("as this is a trial version message will only send to verified number")
+                                print(sheet.cell_value(i,1) + "'s number is not verified")
+
+                #if attendance is greaterthan 75        
+                if sheet.cell_value(i,2) > 75:
+                        #message to be send
+                        requiredperiods = sheet.cell_value(i,5) - (75*sheet.cell_value(i,6))/100
+                        message1="subject: SMS Based Student Information System \n\n your attendance percentage is " + str(sheet.cell_value(i,2)) +"%"
+                        message2="\n number of periods more than 75% is " + str(requiredperiods) + "periods"
+                        message3="\n so please dont be so regular to collage \n by SNIST"
+                        message=message1 + message2 + message3
+                        try:
+                                sms = client.messages.create(to=str(sheet.cell_value(i,3)), from_='+12052551321', body=message)
+                                print("messsage is sent to " + sheet.cell_value(i,1))
+                                print("as this is a trial version message will only send to verified number")
+                                print(sheet.cell_value(i,1) + "'s number is not verified")
+                        except:
+                                print("messsage is not sent to " + sheet.cell_value(i,1))
+                                print("as this is a trial version message will only send to verified number")
+                                print(sheet.cell_value(i,1) + "'s number is not verified")

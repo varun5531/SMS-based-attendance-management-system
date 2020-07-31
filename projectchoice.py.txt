@@ -1,0 +1,12 @@
+print("*********SMS BASED STUDENT INFORMATION SYSTEM**********")
+print("1.sms \n2.mail")
+choice = int(input("enter your choice\n"))
+if choice == 1:
+        import sms
+        sms.main()
+elif choice == 2:
+        import mail
+        mail.main()
+else:
+        print("enter a valid choice")
+        exit()
